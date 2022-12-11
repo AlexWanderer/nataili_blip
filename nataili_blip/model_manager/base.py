@@ -19,6 +19,7 @@ import hashlib
 import json
 import os
 import requests
+import torch
 from tqdm import tqdm
 import git
 import shutil
@@ -42,6 +43,8 @@ class ModelManager:
         self.available_models = []
         self.loaded_models = {}
         self.pkg = importlib_resources.files("nataili_blip")
+        self.cuda_available = torch.cuda.is_available()
+        self.cuda_devices = self.get_cuda_devices()
 
     def init(self):
         self.models = json.loads((self.pkg / "models.json").read_text())
@@ -68,6 +71,11 @@ class ModelManager:
 
     def get_loaded_model(self, model_name):
         return self.loaded_models[model_name]
+
+    def get_loaded_models_names(self, string=False):
+        if string:
+            return ", ".join(self.loaded_models.keys())
+        return list(self.loaded_models.keys())
 
     def is_model_loaded(self, model_name):
         return model_name in self.loaded_models
@@ -231,3 +239,11 @@ class ModelManager:
         if model_name not in self.models:
             return False
         return self.check_available(self.get_model_files(model_name))
+
+    def get_cuda_devices(self):
+        cuda_devices = None
+        if self.cuda_available:
+            cuda_devices = []
+            for i in range(torch.cuda.device_count()):
+                cuda_devices.append({"name": torch.cuda.get_device_name(i), "id": i})
+        return cuda_devices

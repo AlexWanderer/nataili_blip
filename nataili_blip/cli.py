@@ -27,7 +27,6 @@ from .util import logger
 @click.option("--precision", default="half", type=click.Choice(["half", "full"]), show_default=True)
 @click.option("--gpu_id", default=0, show_default=True)
 @click.option("--blip_image_eval_size", default=512, show_default=True)
-@click.option("--vit", default="large", type=click.Choice(["large", "base"]), show_default=True)
 @click.option("--sample", default=True, is_flag=True, show_default=True)
 @click.option("--num_beams", default=3, show_default=True)
 @click.option("--max_length", default=30, show_default=True)

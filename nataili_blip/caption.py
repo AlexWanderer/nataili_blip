@@ -16,8 +16,9 @@
 import torch
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
+import PIL
 
-from .util import performance
+from .util import performance, logger
 
 
 class Caption:
@@ -29,6 +30,8 @@ class Caption:
     def __call__(
         self, image, sample=True, num_beams=3, max_length=30, min_length=10, top_p=0.9, repetition_penalty=1.0
     ):
+        if not isinstance(image, PIL.Image.Image):
+            image = PIL.Image.open(image).convert("RGB")
         gpu_image = (
             transforms.Compose(
                 [
