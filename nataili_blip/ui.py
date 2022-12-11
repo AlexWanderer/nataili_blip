@@ -1,6 +1,5 @@
 import os
 
-import pandas as pd
 import panel as pn
 import param
 from bokeh.themes import DARK_MINIMAL
@@ -29,7 +28,7 @@ dark_material = pn.template.MaterialTemplate(title="Nataili BLIP", theme=DarkThe
 
 def load():
     gpu_id = ui.model.gpu_id if model_manager.cuda_available else 0
-    precision = ui.model.precision if model_manager.cuda_available else "full"
+    precision = ui.model.precision[0]
     model_name = ui.model.model_name[0]
     blip_image_eval_size = ui.model.blip_image_eval_size
 
@@ -132,6 +131,9 @@ class BlipModel(param.Parameterized):
     model_name = param.ListSelector(default=["BLIP"], objects=["BLIP", "BLIP_Large"])
     if model_manager.cuda_available:
         gpu_id = param.Integer(default=0, bounds=(0, len(model_manager.cuda_devices)), step=1)
+        precision = param.ListSelector(default=["full"], objects=["full", "half"])
+    else:
+        precision = ["full"]
     blip_image_eval_size = param.Integer(default=512, bounds=(256, 1024), step=64)
     load_model = param.Action(lambda x: load(), label="Load Model")
 
