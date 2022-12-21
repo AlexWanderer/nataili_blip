@@ -5,6 +5,28 @@
 
 `pip install nataili_blip`
 
+# Code Usage
+
+Minimal example
+
+```
+from nataili_blip.model_manager import BlipModelManager
+from nataili_blip.caption import Caption
+
+image_path = "test.png"
+image = PIL.Image.open(image_path).convert("RGB")
+
+model_name = "BLIP"
+mm = BlipModelManager()
+mm.download_model(model_name)
+mm.load_blip(model_name)
+blip = Caption(mm.loaded_models[model_name]["model"], mm.loaded_models[model_name]["device"])
+
+caption = blip(image)
+
+print(caption)
+```
+
 # CLI Usage
 
 ```
